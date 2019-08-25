@@ -27,7 +27,7 @@ response = rds.stop_db_instance(
 
 ```
 
-This is all it takes to stop a running RDS instance. I am assuming that reader has fair bit of knowledge of lambda here. If not, I will explain a bit of how to start a Lambda function.
+This is all it takes to stop a running RDS instance. Lets get started with creating a Lambda function.
 
 1. Go to Lambda console after logging into AWS console.
 2. Choose your region from top right menu in console.
@@ -43,12 +43,12 @@ This is all it takes to stop a running RDS instance. I am assuming that reader h
 
 ## Create IAM role for Lambda
 
-What we need to is to cretae a new Role. So will will have to keep the page idle there an move on to another browser tab. Again Load AWS Console here.
+What we need to is to create a new Role. So we will have to keep the page idle there and move on to another browser tab. Again Load AWS Console here.
 
 This time Choose `IAM - Identity and Access Management`
 You dont have to choose a region as IAM is Globally available service.
 
-Identify and Access Management - takes care of restricting people and processes to services there are authorised to access and execute. As the name pretty much summerises.
+Identify and Access Management - takes care of restricting people and processes to services they are authorised to access and execute. As the name pretty much summerises.
 
 ![IAM](./start-stop-rds/iam-01.png)
 
