@@ -8,9 +8,9 @@ Of course creating a database in production instance was not an option due to se
 
 The solution was to stop the staging RDS instance every night at 7:30pm. And give developers an API to start the server when they require.
 
-The easiest way to do that in this age of Infrastructure as a Service (IaaS) is to use Lambda to start and stop the RDS instance. And doing this is very simple as well. We just need to give Lambda access to Log to CLoudWatch the logs and rights to start and stop RDS instances.
+The easiest way to do that in this age of Infrastructure as a Service (IaaS) is to use Lambda to start and stop the RDS instance. And doing this is very simple as well. We just need to give Lambda access to CloudWatch to log and rights to start and stop RDS instances.
 
-How we trigger will be handled to the later part. We set the db instance identifier in environment to allow changing it without editing code. While not allowing the same to be passed as a variable via API.
+We set the db instance identifier in environment to allow changing it without editing code. While not allowing the same to be passed as a variable via API. But to the end of this article you will know how to restrict the rule to allow specific RDS Instance only and API key basezd security. They you can make this dynamic for all your RDS Instances.
 
 Boto3 a library now maintained by AWS allows us to use python programming language to interact with AWS services.
 
