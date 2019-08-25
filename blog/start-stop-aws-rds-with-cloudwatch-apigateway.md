@@ -103,7 +103,7 @@ You should see a text boz with this text in there
 }
 ```
 
-This JSON defines that All resources `"Resource": "*"` can do actions `"logs:CreateLogStream",                 "logs:CreateLogGroup", "logs:PutLogEvents",` like creation log stream and group and writing logs into it, `"rds:DescribeDBInstances", "rds:StopDBInstance", "rds:StartDBInstance",` Access information about RDS instances; Start and Stop RDS instances `"lambda:GetFunction", "lambda:GetFunctionConfiguration"` And access the configurations in the Lambda Function so that we can read the environment variables assigned in the function.
+This JSON defines that All resources `"Resource": "*"` gives access to actions `"logs:CreateLogStream",                 "logs:CreateLogGroup", "logs:PutLogEvents",` like creation log stream and group and writing logs into it, `"rds:DescribeDBInstances", "rds:StopDBInstance", "rds:StartDBInstance",` Access information about RDS instances; Start and Stop RDS instances `"lambda:GetFunction", "lambda:GetFunctionConfiguration"` And access the configurations in the Lambda Function so that we can read the environment variables assigned in the function. To the Services that has this Role attached to.
 
 In order to enhance security, we can also restrict this rule to apply onlt to our specific service by assigning `"Resource": "arn:aws:rds:ap-south-1:XXXXXXXXXXXX:db:dbinstancename"`
 
