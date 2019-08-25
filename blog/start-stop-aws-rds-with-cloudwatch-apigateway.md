@@ -105,13 +105,49 @@ You should see a text boz with this text in there
 
 This JSON defines that All resources `"Resource": "*"` gives access to actions `"logs:CreateLogStream",                 "logs:CreateLogGroup", "logs:PutLogEvents",` like creation log stream and group and writing logs into it, `"rds:DescribeDBInstances", "rds:StopDBInstance", "rds:StartDBInstance",` Access information about RDS instances; Start and Stop RDS instances `"lambda:GetFunction", "lambda:GetFunctionConfiguration"` And access the configurations in the Lambda Function so that we can read the environment variables assigned in the function. To the Services that has this Role attached to.
 
-In order to enhance security, we can also restrict this rule to apply onlt to our specific service by assigning `"Resource": "arn:aws:rds:ap-south-1:XXXXXXXXXXXX:db:dbinstancename"`
+In order to enhance security, we can also restrict this rule to apply only to our specific service by assigning `"Resource": "arn:aws:rds:ap-south-1:XXXXXXXXXXXX:db:dbinstancename"`
 
 Here,
 - "XXXXXXXXXXXX" - is your 12 digit account number in AWS
 - dbinstancename is the name of your RDS instance
 
 But in that case, we need to create separate policies by breaking down the {} into multiple hashes under the same `[]` in the JSON, so that each resource can be identified separately. Eg: Logs, RDS and Lambda. Give separate SID values, preferably a better understandable id.
+
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "logs",
+            "Effect": "Allow",
+            "Action": [
+                "logs:CreateLogStream",
+                "logs:CreateLogGroup",
+                "logs:PutLogEvents"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "rds",
+            "Effect": "Allow",
+            "Action": [
+                "rds:DescribeDBInstances",
+                "rds:StopDBInstance",
+                "rds:StartDBInstance"
+            ],
+            "Resource": "arn:aws:rds:ap-south-1:XXXXXXXXXXXX:db:dbinstancename"
+        },
+        {
+            "Sid": "lambda",
+            "Effect": "Allow",
+            "Action": [
+                "lambda:GetFunction",
+                "lambda:GetFunctionConfiguration"
+            ],
+        }
+    ]
+}
+```
 
 This is recommended to ensure other resources are untouched, for example, no lambda should be stopping our Production RDS instance. Doing this ensures the access is only granted to Staging RDS Instance.
 
@@ -215,3 +251,61 @@ I belive now your RDS instance must have gone into a `Stopping` state.
 Now it is time to create a CloudWatch trigger to run it at every day 7:30pm.
 
 ## CloudWatch trigger to execute Lambda at intervals
+
+1. From AWS Console choose CloudWatch.
+2. Choose `Rule` from left sidebar and `Create Rule`
+
+![Create CloudWatch Rule](./start-stop-rds/cloudwatch-01.png)
+
+
+3. Choose `Schedule` Radio Button
+4. Choose `Cron expression` and enter `0 14 * * ? *`
+
+This essentially means at every 14th hour (2PM) on every day (?) run the event. But we talked about 7:30PM! Yes, Because CloudWatch takes cron expression in GMT and 2PM GMT is 7:30PM IST. Please make sure you keep that in mind while scheduling tasks.
+
+Once you enter the expression, immediately it will show some sample date and times in future when the event will be triggered. Cross Verify this with your expectation.
+
+![Create CloudWatch Rule save and attach event](./start-stop-rds/cloudwatch-02.png)
+
+5. Select your targer Lambda function from the right side dropdown.
+6. Hit `Configure details`
+7. Give it a name in the next step and save. Preferrably name it ProductRuleStopRDSInstance for ease of understanding.
+
+Now if you go back to the Lambda Triggers you can see that CloudWatch event is listed as a trigger.
+
+Wait for it to execute at the time you have choosen. Please reach out in case this doesn't work.
+
+
+Time to create a StartRdsInstance Lambda accessed via API Gateway.
+
+I am sure now you can do it till the adding trigger part.
+Including Creating a New Lambda function and attaching the rule.
+
+instead of using `rds.stop_db_instance` use `rds.start_db_instance`.
+
+And Go to `Designer` section and add a trigger and choose `API Gateway` as the trigger.
+
+![Create Api Gateway](./start-stop-rds/api-gateway-01.png)
+
+- Choose to `Create a new API`
+- Set Security to `Open with API key`
+- The submit `Add` button.
+
+![Attach Api Gateway](./start-stop-rds/api-gateway-02.png)
+
+You should see your API gateway details now under triggers in Lambda when you select API gateway.
+
+
+Now you can use this curl function replaced with you API endpoint and api-key in header to start your RDS instance.
+```
+curl -X GET \
+  https://xxxx.execute-api.ap-south-1.amazonaws.com/staging/ProductStartRDSInstance \
+  -H 'Accept: */*' \
+  -H 'Accept-Encoding: gzip, deflate' \
+  -H 'Cache-Control: no-cache' \
+  -H 'Host: xxxx.execute-api.ap-south-1.amazonaws.com' \
+  -H 'cache-control: no-cache' \
+  -H 'x-api-key: eIxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxCi'
+```
+
+I hope this helped you understand how to use Lambda CloudWatch and API Gateway to start and stop your RDS instance. If I have missed any thing here, please feel free to let me know at sumitasok as email ID in Gmail. Thank you if you read till here. Wanted to keep this short but apparantly it became a long article.
