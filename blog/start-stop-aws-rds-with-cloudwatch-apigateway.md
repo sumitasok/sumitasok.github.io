@@ -50,7 +50,7 @@ You dont have to choose a region as IAM is Globally available service.
 
 Identify and Access Management - takes care of restricting people and processes to services they are authorised to access and execute. As the name pretty much summerises.
 
-![IAM](./start-stop-rds/iam-01.png)
+![IAM](./assets/start-stop-rds/iam-01.png)
 
 1. On the left panel choose `Roles`
 2. Hit `Create role`
@@ -59,7 +59,7 @@ Identify and Access Management - takes care of restricting people and processes 
 
 Here we are creating an IAM role for Lambda function.
 
-![Create Role](./start-stop-rds/iam-02.png)
+![Create Role](./assets/start-stop-rds/iam-02.png)
 
 5. Hit `Next: Permissions`
 
@@ -164,7 +164,7 @@ It is always recommended to create policies for specific jobs, instead of creati
 Now that our Policy is mane, go to our Role creation screen
 10. Choose `Filter Policies` and select `Customer Managed` you should see your policy there.
 
-![Create Role](./start-stop-rds/iam-03.png)
+![Create Role](./assets/start-stop-rds/iam-03.png)
 
 11. After chooing your policy, select `Next: Tags`. Give your tags for identifying the services with you r product.
 
@@ -182,7 +182,7 @@ We left it to `Use existing Roles` in `Permissions` Section.
 
 9. Choose `Use existing Roles` and attach the role we just created in `Existing Roles` drop down.
 
-![Create Role](./start-stop-rds/iam-04.png)
+![Create Role](./assets/start-stop-rds/iam-04.png)
 
 10. Click `Create Function`.
 
@@ -255,7 +255,7 @@ Now it is time to create a CloudWatch trigger to run it at every day 7:30pm.
 1. From AWS Console choose CloudWatch.
 2. Choose `Rule` from left sidebar and `Create Rule`
 
-![Create CloudWatch Rule](./start-stop-rds/cloudwatch-01.png)
+![Create CloudWatch Rule](./assets/start-stop-rds/cloudwatch-01.png)
 
 
 3. Choose `Schedule` Radio Button
@@ -265,7 +265,7 @@ This essentially means at every 14th hour (2PM) on every day (?) run the event. 
 
 Once you enter the expression, immediately it will show some sample date and times in future when the event will be triggered. Cross Verify this with your expectation.
 
-![Create CloudWatch Rule save and attach event](./start-stop-rds/cloudwatch-02.png)
+![Create CloudWatch Rule save and attach event](./assets/start-stop-rds/cloudwatch-02.png)
 
 5. Select your targer Lambda function from the right side dropdown.
 6. Hit `Configure details`
@@ -285,13 +285,13 @@ instead of using `rds.stop_db_instance` use `rds.start_db_instance`.
 
 And Go to `Designer` section and add a trigger and choose `API Gateway` as the trigger.
 
-![Create Api Gateway](./start-stop-rds/api-gateway-01.png)
+![Create Api Gateway](./assets/start-stop-rds/api-gateway-01.png)
 
 - Choose to `Create a new API`
 - Set Security to `Open with API key`
 - The submit `Add` button.
 
-![Attach Api Gateway](./start-stop-rds/api-gateway-02.png)
+![Attach Api Gateway](./assets/start-stop-rds/api-gateway-02.png)
 
 You should see your API gateway details now under triggers in Lambda when you select API gateway.
 
