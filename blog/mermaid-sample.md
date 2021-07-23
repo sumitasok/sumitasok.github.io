@@ -5,3 +5,5 @@ sequenceDiagram
     John-->>-Alice: Great!
     
 ```
+
+![Mermaid](assets/mermaid-sample/sample.svg)
