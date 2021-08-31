@@ -8,8 +8,10 @@ mermaid:
   src: 'https://unpkg.com/mermaid@8.11.4/dist/mermaid.js'
 
 # remote_theme: pages-themes/minimal@v0.2.0
-remote_theme: pages-themes/dinky@v0.2.0
+remote_theme: "mmistakes/minimal-mistakes@4.24.0"
 # plugins:
 # - jekyll-remote-theme
 # - jekyll-mermaid
-theme: jekyll-theme-minimal
+# theme: jekyll-theme-minimal
+plugins:
+- jekyll-include-cache

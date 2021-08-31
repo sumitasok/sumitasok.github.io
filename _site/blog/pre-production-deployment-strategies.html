@@ -1,0 +1,79 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Pre-Production deployment strategies</title>
+  </head>
+  <body>
+    <nav>
+    
+      <a href="/" >
+        Home
+      </a>
+    
+      <a href="/about.html" >
+        About
+      </a>
+    
+      <a href="/blog.html" >
+        Blog
+      </a>
+    
+  </nav>
+    <h1 id="pre-production-deployment-strategies">Pre-Production deployment strategies</h1>
+
+<ol>
+  <li>Product finalises a release; tags tickets with the release number in Jira; plans Sprint, and development starts for that specific release version.</li>
+  <li>Freezing of Release Candidate for QA to test and Sign-off for production release</li>
+</ol>
+
+<p>Once deployed to Pre-Prod, and QA starts testing, we cannot push any new changes to any services; except the bug fixes that have to go in this release.</p>
+
+<ol>
+  <li>Developers should get an environment to test their development independently. It should be possible if a front-end engineer wants to try their feature integration with a back-end service while it is live or in development.
+    <ol>
+      <li>Developers can use live (pre-prod) services via the link for almost all applications and point to in-development services from test deployments ensuring non-redundant deployments. Developers will have to deploy the changed services for testing manually. Manual configuration of changes is a fair practice as developers are clear about what all services needs modifications compared to the current production setup.</li>
+    </ol>
+  </li>
+</ol>
+
+<pre><code class="language-mermaid">sequenceDiagram
+    participant inDevUI as In-Development&lt;br/&gt;blog-UI&lt;br&gt; 127.0.0.1/ui/blog
+    participant inDevBackendService as In-Development&lt;br&gt;Backend blog-Service &lt;br&gt; 127.0.0.1/api/blog
+    participant inDevBackendXService as In-Development&lt;br&gt;Backend tag-Service&lt;br&gt; 127.0.0.1/api/tag
+    participant alreadyDevelopedBackendYService as In-Preprod&lt;br&gt;Backend comment-Service &lt;br&gt; preprod.example.com/api/comments
+
+    inDevBackendService -&gt;&gt; inDevBackendXService: talk to a service deployed alongside
+    inDevBackendService -&gt;&gt; alreadyDevelopedBackendYService: talk to a service deployed in pre-prod
+    alreadyDevelopedBackendYService --&gt;&gt; inDevBackendService: this request will require In-Prod system to be deployed locally.&lt;br&gt; becomes a dependancy.
+
+</code></pre>
+
+<ul>
+  <li>The configurations can be done at the service mesh level. Engineers will only have to configure the appropriate services mesh config to bring a working system up in local / deployed Kubernetes cluster; with relevant services only enabled.</li>
+</ul>
+
+<pre><code class="language-mermaid">graph TD
+    UI[inDevUI] &lt;--&gt;|127.0.0.1| SM[Service Mesh]
+    BE1[inDevUI] &lt;--&gt;|127.0.0.1| SM[Service Mesh]
+    BE2[inDevUI] &lt;--&gt;|127.0.0.1| SM[Service Mesh]
+    BE3[inDevUI] &lt;--&gt;|api.prod.com| SM[Service Mesh]
+</code></pre>
+
+<p>In a microservice architecture, you typically find:</p>
+
+<ul>
+  <li>Teams are organized around business capabilities such as cross-functional teams of several UI, middleware, and back-end developers, a database administrator, and a DevOps specialist.</li>
+  <li>Decentralized governance that allows every team to choose the right tool for their job.</li>
+  <li>Decentralized data management that allows each microservice or group of related microservices to manage its own data.</li>
+  <li>Testing, deployment, and infrastructure typically are automated with little or no manual intervention.</li>
+</ul>
+
+<p>Ref:</p>
+
+<ul>
+  <li><a href="https://www.infoq.com/articles/twelve-testing-techniques-microservices-intro/">Testing Microservices: an Overview of 12 Useful Techniques - Part 1</a></li>
+</ul>
+
+  </body>
+</html>
