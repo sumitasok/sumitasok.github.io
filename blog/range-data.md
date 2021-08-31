@@ -247,7 +247,9 @@ insert into tstzrgt values (101, '[2000-01-03 16:00:00+5:30, 2000-01-04 08:00:00
 insert into tstzrgt values (103, '[2000-01-02 04:00:00+5:30, 2000-01-02 16:00:00+5:30]');
 ```
 
-After the above change, only room 14 should be available at 2nd 12pm to 3rd 4am
+![img](range-data-assets/Screenshot%202021-08-31%20at%2012.52.42%20PM.png)
+
+After the above change, only room 104 should be available at 2nd 12pm to 3rd 4am
 
 ![img](range-data-assets/Screenshot%202021-08-31%20at%2012.41.26%20PM.png)
 
@@ -260,5 +262,21 @@ From an application point of view, there are various ways to approach the query.
 
 We can always filter the data based on additional parameters like roomType.
 
+Let us evaluate both approached using query.
 
+1. passing the list of rooms by ID.
+
+```
+select unnest(array[100, 101, 102, 103, 104, 107])
+    EXCEPT
+    select room from tstzrgt where dttm && tstzrange('2000-01-02 12:00:00+5:30', '2000-01-03 04:00:00+5:30');
+```
+
+![img](/blog/range-data-assets/Screenshot%202021-08-31%20at%201.11.06%20PM.png)
+
+Which also returned 107, which was not already in the booking table.
+
+Note that, in a microservices architecture, the booking itself would be a service and the rooms data will be with a different service. Both wouldnt be sharing database. Booking service might be managing bokkings for entities other than room as well in a same table. We will check, how to fetch availaibity of various entites together in a later post. Redundantly storing entity types with the booking service is advice-able
+
+In a simple scenario, we will be having different room types, where room types information willnot be stored in booking db. Even the room ID would be a uuid.
 
